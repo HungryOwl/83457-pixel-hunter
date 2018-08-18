@@ -25,7 +25,7 @@ let arrows = `<div class="arrows__wrap"><style>.arrows__wrap {
 </div>`;
 
 // Номер приветственного экрана @todo превратить это в словарь экранов
-let WELCOME_SCREEN = 1;
+const WELCOME_SCREEN = 1;
 
 // Текущий слайд
 let currentSlide = WELCOME_SCREEN;
