@@ -1,5 +1,28 @@
+'use strict';
+
 // Обертка для слайдов
 const mainElement = document.querySelector(`#main`);
+
+// Коды клавиатурных стрелок
+const RIGHT_ARROW = 39;
+const LEFT_ARROW = 37;
+
+// Шаблон стрелок
+let arrows = `<div class="arrows__wrap"><style>.arrows__wrap {
+      position: absolute; 
+      top: 95px;
+      left: 50%;
+      margin-left: -56px;
+    }
+    .arrows__btn {
+      background: none;
+      border: 2px solid black;
+      padding: 5px 20px;
+    }
+  </style>
+  <button class="arrows__btn"><-</button>
+  <button class="arrows__btn">-></button>
+</div>`;
 
 // Номер приветственного экрана @todo превратить это в словарь экранов
 let WELCOME_SCREEN = 1;
@@ -45,11 +68,11 @@ const slideUpdateOptions = {
  * @param {number} keyCode код нажатой клавиши
  */
 const updateCurrentSlide = (keyCode) => {
-  for (let key in slideUpdateOptions) {
-    if (keyCode === Number(key)) {
-      currentSlide = slideUpdateOptions[keyCode](currentSlide);
-      switchSlide(currentSlide);
-    }
+  let updateSlide = slideUpdateOptions[keyCode];
+
+  if (updateSlide) {
+    currentSlide = updateSlide(currentSlide);
+    switchSlide(currentSlide);
   }
 };
 
@@ -65,6 +88,27 @@ const switchSlide = (index) => {
   showSlide(slides[index]);
 };
 
+// Показываем стрелки
+const showArrows = () => {
+  // Вставляем контейнер со стрелками в разметку
+  document.body.insertAdjacentHTML(`beforeend`, arrows);
+
+  // Ищем стрелки
+  arrows = document.querySelectorAll(`.arrows__btn`);
+
+  // Устанавливаем айдишники, равные кодам стрелок на клавиатуре
+  arrows[0].setAttribute(`id`, LEFT_ARROW);
+  arrows[1].setAttribute(`id`, RIGHT_ARROW);
+};
+
+const addListeners = () => {
+  // Вешаем обработчик нажатия с клавиатуры
+  document.addEventListener(`keydown`, onKeyPress);
+
+  // Вешаем обработчики на стрелки
+  arrows.forEach((arrow) => arrow.addEventListener(`click`, onArrowClick));
+};
+
 /**
  * Обрабатываем нажатие с клавиатуры и переключаем слайды
  * @param {KeyboardEvent} evt код нажатой клавиши
@@ -74,8 +118,12 @@ const onKeyPress = (evt) => {
   updateCurrentSlide(evt.keyCode);
 };
 
-// Вешаем обработчик нажатия с клавиатуры
-document.addEventListener(`keydown`, onKeyPress);
+const onArrowClick = (evt) => {
+  const keyCode = Number(evt.target.getAttribute(`id`));
 
-// По умолчанию показываем нулевой слайд
-switchSlide(currentSlide);
+  updateCurrentSlide(keyCode);
+};
+
+showArrows(); // Вставляем стрелки
+addListeners(); // Вешаем обработчики
+switchSlide(currentSlide); // По умолчанию показываем нулевой слайд
