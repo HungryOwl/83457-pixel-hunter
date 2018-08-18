@@ -126,4 +126,4 @@ const onArrowClick = (evt) => {
 
 showArrows(); // Вставляем стрелки
 addListeners(); // Вешаем обработчики
-switchSlide(currentSlide); // По умолчанию показываем нулевой слайд
+switchSlide(currentSlide); // Показываем текущий слайд
